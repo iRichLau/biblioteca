@@ -2,12 +2,10 @@ package com.thoughtworks.tw101.biblioteca;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.Parameterized;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -19,13 +17,15 @@ public class MenuTest {
     private BufferedReader bufferedReader;
     private BookCatalog bookCatalog;
     private Menu menu;
+    private CatalogManager catalogManager;
 
     @Before
     public void setUp() {
         printStream = mock(PrintStream.class);
         bufferedReader = mock(BufferedReader.class);
         bookCatalog = mock(BookCatalog.class);
-        menu = new Menu(printStream, bufferedReader, bookCatalog);
+        catalogManager = mock(CatalogManager.class);
+        menu = new Menu(printStream, bufferedReader, bookCatalog, catalogManager);
     }
 
     @Test
@@ -33,24 +33,27 @@ public class MenuTest {
         menu.printMenu();
 
         verify(printStream).println(contains("List Books"));
+        verify(printStream).println(contains("Checkout Book"));
     }
 
     @Test
     public void shouldPrintBookListWhenOptionOneIsSelected() throws IOException {
-        userWillSelectOptionOne();
-        menu.runSelectedOption();
+        menu.runSelectedOption("1");
 
         verify(bookCatalog).listBooks();
     }
 
-    private void userWillSelectOptionOne() throws IOException {
-        when(bufferedReader.readLine()).thenReturn("1");
+    @Test
+    public void shouldCheckOutABookWhenOptionTwoIsSelected(){
+        menu.runSelectedOption("2");
+
+        verify(catalogManager).checkOutBookByTitle();
     }
 
     @Test
     public void shouldDisplayInvalidMessageWhenInvalidInput() throws IOException {
         userWillSelectInvalidThenValidOption();
-        menu.runSelectedOption();
+        menu.getValidUserInput();
 
         verify(printStream).println(contains("Select a valid option!"));
     }
@@ -60,12 +63,12 @@ public class MenuTest {
     }
 
     @Test
-    public void shouldQuitWhenOptionQuitIsSelected() throws IOException {
+    public void shouldStopAskingForUserInputWhenOptionQuitIsSelected() throws IOException {
         userSelectsQuitFromMenu();
 
-        menu.runSelectedOption();
+        menu.runUserInput();
 
-        verify(menu).quit();
+        verify(bufferedReader, times(1)).readLine();
 
     }
 

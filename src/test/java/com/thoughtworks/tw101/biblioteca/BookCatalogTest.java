@@ -1,15 +1,14 @@
 package com.thoughtworks.tw101.biblioteca;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,5 +62,34 @@ public class BookCatalogTest {
         verify(printStream).println(contains("Year Published"));
     }
 
+    @Test
+    public void shouldNotDisplayBookWhenBookIsCheckedOut(){
+        Book checkedOutBook = mock(Book.class);
+        Book notCheckedOutBook = mock(Book.class);
+        when(checkedOutBook.isCheckedOut()).thenReturn(true);
+        when(notCheckedOutBook.isCheckedOut()).thenReturn(false);
+        when(checkedOutBook.details()).thenReturn("Book1 Details");
+        when(notCheckedOutBook.details()).thenReturn("Book2 Details");
+
+        bookList.add(checkedOutBook);
+        bookList.add(notCheckedOutBook);
+
+        bookCatalog.listBooks();
+
+        verify(printStream).println(contains("Book2 Details"));
+        verify(printStream).println(not(contains("Book2 Details")));
+    }
+
+    @Test
+    public void shouldCheckOutBookWhenTitleIsGiven(){
+        Book book = mock(Book.class);
+        when(book.getTitle()).thenReturn("Book Title");
+
+        bookList.add(book);
+
+        bookCatalog.checkOutBookByTitle("Book Title");
+
+        verify(book).checkOut();
+    }
 
 }

@@ -43,7 +43,7 @@ public class BibliotecaTest {
     public void shouldRunSelectedMenuOptionWhenUserMakesASelection() throws IOException {
         biblioteca.start();
 
-        verify(menu).runSelectedOption();
+        verify(menu).runUserInput();
     }
 
 

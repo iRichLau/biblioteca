@@ -13,7 +13,6 @@ import static org.mockito.Matchers.*;
  */
 public class BookTest {
 
-
     @Test
     public void shouldPrintAuthorAndYearPublishedInDetails(){
         Book book = new Book("The Metamorphosis", "Franz Kafka", "1915");
@@ -23,10 +22,13 @@ public class BookTest {
 
     }
 
+    @Test
+    public void shouldMarkBookAsCheckedOutAfterBookIsCheckedOut() {
+        Book book = new Book("The Metamorphosis", "Franz Kafka", "1915");
 
+        book.checkOut();
 
-
-
-
+        assertTrue(book.isCheckedOut());
+    }
 
 }

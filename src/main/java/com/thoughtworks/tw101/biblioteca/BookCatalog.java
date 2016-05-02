@@ -21,7 +21,17 @@ public class BookCatalog {
 
         printStream.println(header);
         for(Book curBook : bookList) {
-            printStream.println(curBook.details());
+            if(!curBook.isCheckedOut()) {
+                printStream.println(curBook.details());
+            }
+        }
+    }
+
+    public void checkOutBookByTitle(String bookTitle) {
+        for(Book book : bookList){
+            if (book.getTitle().equals(bookTitle)){
+                book.checkOut();
+            }
         }
     }
 }
