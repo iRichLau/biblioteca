@@ -6,6 +6,9 @@ import java.io.PrintStream;
 
 public class Menu {
 
+    public static final String LIST_BOOK_OPTION = "1";
+    public static final String QUIT_OPTION = "0";
+    public static final String CHECKOUT_BOOK = "2";
     private PrintStream printStream;
     private BufferedReader bufferedReader;
     private BookCatalog bookCatalog;
@@ -20,6 +23,7 @@ public class Menu {
 
     public void printMenu() {
         printStream.println("Select Option:");
+        printStream.println("0. Quit");
         printStream.println("1. List Books");
         printStream.println("2. Checkout Book");
     }
@@ -35,13 +39,15 @@ public class Menu {
 
     public void runUserInput() {
         String validUserInput = getValidUserInput();
-        while(!validUserInput.equals("0")) {
+        while(!validUserInput.equals(QUIT_OPTION)) {
             runSelectedOption(validUserInput);
+            printMenu();
             validUserInput = getValidUserInput();
         }
+
     }
 
-    public String getValidUserInput() {
+    private String getValidUserInput() {
         String userInput = getBufferedReaderInput();
 
         while (!isValidUserInput(userInput)) {
@@ -53,16 +59,19 @@ public class Menu {
     }
 
     private boolean isValidUserInput(String userInput) {
-        return userInput.equals("1") || userInput.equals("0") ||
-                userInput.equals("2");
+        return userInput.equals(LIST_BOOK_OPTION) || userInput.equals(QUIT_OPTION) ||
+                userInput.equals(CHECKOUT_BOOK);
     }
 
-    public void runSelectedOption(String userInput) {
-        if(userInput.equals("1")) {
+    private void runSelectedOption(String userInput) {
+        if(userInput.equals(LIST_BOOK_OPTION)) {
             bookCatalog.listBooks();
+
         }
-        else if(userInput.equals("2")) {
+        else if(userInput.equals(CHECKOUT_BOOK)) {
+            printStream.println("Enter book title: ");
             catalogManager.checkOutBookByTitle();
+            printStream.println("Book has successfully been checked out.");
         }
     }
 }

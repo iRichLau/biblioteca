@@ -38,14 +38,18 @@ public class MenuTest {
 
     @Test
     public void shouldPrintBookListWhenOptionOneIsSelected() throws IOException {
-        menu.runSelectedOption("1");
+        when(bufferedReader.readLine()).thenReturn("1").thenReturn("0");
+
+        menu.runUserInput();
 
         verify(bookCatalog).listBooks();
     }
 
     @Test
-    public void shouldCheckOutABookWhenOptionTwoIsSelected(){
-        menu.runSelectedOption("2");
+    public void shouldCheckOutABookWhenOptionTwoIsSelected() throws IOException {
+        when(bufferedReader.readLine()).thenReturn("2").thenReturn("0");
+
+        menu.runUserInput();
 
         verify(catalogManager).checkOutBookByTitle();
     }
@@ -53,13 +57,14 @@ public class MenuTest {
     @Test
     public void shouldDisplayInvalidMessageWhenInvalidInput() throws IOException {
         userWillSelectInvalidThenValidOption();
-        menu.getValidUserInput();
+
+        menu.runUserInput();
 
         verify(printStream).println(contains("Select a valid option!"));
     }
 
     private void userWillSelectInvalidThenValidOption() throws IOException {
-        when(bufferedReader.readLine()).thenReturn("Hey Nicolette").thenReturn("1");
+        when(bufferedReader.readLine()).thenReturn("Hey Nicolette").thenReturn("1").thenReturn("0");
     }
 
     @Test
@@ -69,6 +74,14 @@ public class MenuTest {
         menu.runUserInput();
 
         verify(bufferedReader, times(1)).readLine();
+
+    }
+
+    @Test
+    public void shouldPromptForOptionWhenUserInputIsNotQuit() throws IOException {
+        when(bufferedReader.readLine()).thenReturn("1", "0");
+
+
 
     }
 
