@@ -3,7 +3,9 @@ import com.thoughtworks.tw101.biblioteca.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +15,11 @@ public class Main {
         BookCatalog bookCatalog = new BookCatalog(bookList, System.out);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         CatalogManager catalogManager = new CatalogManager(bookCatalog, bufferedReader);
-        Menu menu = new Menu(System.out, bufferedReader, bookCatalog, catalogManager);
+        Map<String, Command> libraryCommands = new HashMap<>();
+        libraryCommands.put("0", new QuitCommand());
+        libraryCommands.put("1", new ListBookCommand(bookCatalog));
+        libraryCommands.put("2", new CheckoutBookCommand(bookCatalog));
+        Menu menu = new Menu(System.out, bufferedReader, libraryCommands);
         Biblioteca biblioteca = new Biblioteca(System.out, menu);
         biblioteca.start();
     }

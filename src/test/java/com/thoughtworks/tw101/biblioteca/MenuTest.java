@@ -6,9 +6,8 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.*;
 
@@ -18,14 +17,14 @@ public class MenuTest {
     private BookCatalog bookCatalog;
     private Menu menu;
     private CatalogManager catalogManager;
+    private Map<String,Command> libraryCommand;
 
     @Before
     public void setUp() {
         printStream = mock(PrintStream.class);
         bufferedReader = mock(BufferedReader.class);
-        bookCatalog = mock(BookCatalog.class);
-        catalogManager = mock(CatalogManager.class);
-        menu = new Menu(printStream, bufferedReader, bookCatalog, catalogManager);
+        libraryCommand = mock(Map.class);
+        menu = new Menu(printStream, bufferedReader, libraryCommand);
     }
 
     @Test
@@ -40,7 +39,7 @@ public class MenuTest {
     public void shouldPrintBookListWhenOptionOneIsSelected() throws IOException {
         when(bufferedReader.readLine()).thenReturn("1").thenReturn("0");
 
-        menu.runUserInput();
+        menu.runUserSelection();
 
         verify(bookCatalog).listBooks();
     }
@@ -49,7 +48,7 @@ public class MenuTest {
     public void shouldCheckOutABookWhenOptionTwoIsSelected() throws IOException {
         when(bufferedReader.readLine()).thenReturn("2").thenReturn("0");
 
-        menu.runUserInput();
+        menu.runUserSelection();
 
         verify(catalogManager).checkOutBookByTitle();
     }
@@ -58,7 +57,7 @@ public class MenuTest {
     public void shouldDisplayInvalidMessageWhenInvalidInput() throws IOException {
         userWillSelectInvalidThenValidOption();
 
-        menu.runUserInput();
+        menu.runUserSelection();
 
         verify(printStream).println(contains("Select a valid option!"));
     }
@@ -71,7 +70,7 @@ public class MenuTest {
     public void shouldStopAskingForUserInputWhenOptionQuitIsSelected() throws IOException {
         userSelectsQuitFromMenu();
 
-        menu.runUserInput();
+        menu.runUserSelection();
 
         verify(bufferedReader, times(1)).readLine();
 
